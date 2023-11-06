@@ -1,0 +1,32 @@
+//Employee(emp_id, emp_name, salary, designation)
+//Salary_Backup(emp_id, old_salary, new_salary, salary_difference)
+//Create a Trigger to record salary change of the employee. Whenever salary is updated insert the details in Salary_Backup table.
+//Create a Trigger that will prevent deleting the employee record having designation as CEO.
+
+
+
+
+1.create table employee(emp_id int,emp_name varchar(20),salary varchar(10),designation varchar(10));
+create table salary_backup(emp_id int,old_salary int,new_salary int,salary_difference int);
+
+insert into employee values(1,'A',20000,'manager');
+insert into employee values(2,'B',10000,'empl');
+
+create trigger salarychange_trigger
+before UPDATE on employee 
+for each row 
+begin
+    if :NEW.salary~=:OLD.salary then
+       insert into salary_backup(emp_id,old_salary,new_salary,salary_difference)
+       values(:OLD.emp_id,:OlD.salary,:NEW.salary,:NEW.salary-:OLD.salary);
+    end if;
+end
+
+2.create trigger prevent_delete 
+before delete on employee
+for each row 
+begin
+    if :OLD.designation='manager' then
+    raise_application_error(-21,'cannot delete CEO employee record');
+    end if;
+end
