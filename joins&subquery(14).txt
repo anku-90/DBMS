@@ -1,0 +1,51 @@
+Consider Following Schema
+Employee (Employee_id, First_name, last_name , hire_date, salary, Job_title, manager_id, department_id)
+Departments(Department_id, Department_name, Manager_id, Location_id)
+Locations(location_id ,street_address ,postal_code, city, state, country_id)
+Manager(Manager_id, Manager_name)
+Create the tables with referential integrity. Solve following queries using joins and subqueries.
+1. Write a query to find the names (first_name, last_name) and the salaries of the employees who have a
+higher salary than the employee whose last_name=''Singh”.
+2. Write a query to find the names (first_name, last_name) of the employees who have a manager and
+work for a department based in the United States.
+2. Write a query to find the names (first_name, last_name), the salary of the employees whose salary is
+greater than the average salary.
+3. Write a query to find the employee id, name (last_name) along with their manager_id, manager name
+(last_name).
+4. Find the names and hire date of the employees who were hired after 'Jones'.
+
+
+
+
+
+1.mysql> select first_name,last_name,salary
+    -> from employee
+    -> where salary greater than(
+    -> select salary 
+    -> 
+    -> from employee
+    -> where last_name='singh');
+
+2.mysql> select e.first_name,e.last_name 
+    -> from employee e
+    -> join departments d on e.deparTment_id=d.department_id
+    -> join locations l on d.location_id=l.location_id
+    -> where l.country_id='US' and e.manager_id IS NOT NULL;
+    
+3.mysql> select first_name,last_name,salary
+    -> from employee
+    -> where salary greaterthan(
+    -> select AVG(salary)
+    -> from employee);
+
+4.mysql> select e.first_name,e.em_id,e.manager_id,m.manager_name
+    -> from employee e
+    -> left join manager m on e.manager_id=m.manager_id;
+    
+5.mysql> select first_name,hire_date
+    -> from employee
+    -> where hire_date greater than(
+    -> select hire_date
+    -> from employee
+    -> where last_name='jones');
+

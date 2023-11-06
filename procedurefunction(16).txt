@@ -1,0 +1,48 @@
+Employee( emp_id, dept_idemp_name, DoJ, salary, commission,job_title)
+1. Consider the schema given above. Keep the commission column empty initially. Write a Stored Procedure to
+record the employee commission based on following conditions. If salary is more than 10000 then commission
+is 0.4%, if Salary is less than 10000 but experience is more than 10 years then 0.35%, if salary is less than 3000
+then commission is 0.25%. In the remaining cases commission is 0.15%.
+2. Write a PLSQL Function that takes department ID and returns the name of the manager of the department.
+
+
+
+1.  
+create table EMPLOYEES(emp_id int,salary int,commission int,DOJ varchar(20));
+
+insert into EMPLOYEES values(1,100000,0,'2011-1-2'); 
+
+CREATE OR REPLACE PROCEDURE RecordEmployeeCommission (emp_id IN NUMBER, salary IN NUMBER, DoJ IN DATE) IS
+  commission_rate NUMBER;
+BEGIN
+  IF salary > 10000 THEN
+    commission_rate := 0.004; -- 0.4%
+  ELSIF salary <= 10000 AND (SYSDATE - DoJ) >= 3652 THEN
+    commission_rate := 0.0035; -- 0.35%
+  ELSIF salary < 3000 THEN
+    commission_rate := 0.0025; -- 0.25%
+  ELSE
+    commission_rate := 0.0015; -- 0.15%
+  END IF;
+  
+  -- Insert the commission record into the commission column for the employee.
+  UPDATE EMPLOYEES
+  SET commission = salary * commission_rate
+  WHERE emp_id = emp_id;
+  
+END;
+
+begin
+RecordEmployeeCommission(1,100000,'1-1-2');
+end
+
+select * from EMPLOYEES;
+
+2.CREATE OR REPLACE FUNCTION GetDepartmentManager (dept_id IN NUMBER) RETURN VARCHAR2 IS
+  manager_name VARCHAR2(50);
+BEGIN
+  SELECT emp_name INTO manager_name
+  FROM Employee
+  WHERE dept_id = dept_id AND job_title = 'Manager';
+  RETURN manager_name;
+END;

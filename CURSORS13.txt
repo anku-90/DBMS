@@ -1,0 +1,78 @@
+Consider a table Employee with schema as Employee (Emp_id, Emp_Name,Salary).
+1. Write an explicit cursor to display records of all employees with salary greater than 50,000.
+2. Write a PL/SQL block of code using Implicit Cursor that will display total number of tuples in Employee
+table.
+3. Write a PL/SQL block of code using Parameterized Cursor that will display salary of employee id entered by
+the user.
+
+
+
+
+create table EMPLOYEES(EMP_ID INT,EMP_NAME VARCHAR(20),SALARY INT);
+
+insert into employees values(100,'ANVITA',60000);
+insert into employees valueS(101,'DIVYA',40000);
+insert into employees values(102,'GUJAR',70000);
+insert into employees values(103,'MANYA',100000);
+
+1. DECLARE 
+    EMP_ID NUMBER;
+    EMP_NAME VARCHAR(20);
+    SALARY NUMBER;
+    
+    CURSOR SALARYWISE IS
+    SELECT EMP_ID,EMP_NAME,SALARY 
+    FROM EMPLOYEES 
+    where SALARY>50000;
+    
+BEGIN
+
+DBMS_OUTPUT.PUT_LINE('EMP_ID|EMP_NAME|SALARY');
+DBMS_OUTPUT.PUT_LINE('-----------------------');
+
+FOR I in SALARYWISE LOOP
+DBMS_OUTPUT.PUT_LINE(I.EMP_ID||'|'||I.EMP_NAME||'|'||I.SALARY);
+END LOOP;
+END;
+
+2.DECLARE 
+
+    V_TUPLES NUMBER;
+    
+BEGIN
+
+    SELECT COUNT(*) INTO V_TUPLES FROM EMPLOYEES;
+
+    DBMS_OUTPUT.PUT_LINE('TOTAL NUMBER OF ROWS '||V_TUPLES);
+
+END;
+
+3.DECLARE 
+    v_employee_id number;
+    v_salary number;
+    
+    cursor salary_cursor(Employee_id NUMBER) IS
+    select salary from employees 
+    where emp_id=Employee_id;
+    
+BEGIN
+    v_employee_id:=&Employee_id_input;
+    
+    open salary_cursor(v_employee_id);
+    
+    fetch salary_cursor into v_salary;
+    
+    IF salary_cursor%found THEN
+    DBMS_OUTPUT.PUT_LINE('salary of employee id :'||v_employee_id||'has a salary of '||v_salary);
+    
+    ELSE 
+    DBMS_OUTPUT.PUT_LINE('EMPLOYEE ID :'||v_employee_id||'not found');
+    
+    end if;
+    
+    close salary_cursor;
+    
+END;
+
+
+

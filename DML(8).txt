@@ -1,0 +1,43 @@
+*/Create following tables using a given schema and insert appropriate data into the same:
+Customer (CustID, Name, Cust_Address, Phone_no, Email_ID, Age)
+Branch (Branch ID, Branch_Name, Address)
+Account (Account_no, Branch ID, CustID, date_open, Account_type, Balance)
+1. Modify the size of column “Email_Address” to 20 in Customer table.
+2. Change the column “Email_Address” to Not Null in Customer table.
+3. Display the total customers with the balance >50, 000 Rs.
+4. Display average balance for account type=”Saving Account”.
+5. Display the customer details that lives in Pune or name starts with ’A’.
+6. Create a table Saving_Account with (Account_no, Branch ID, CustID, date_open, Balance) using
+Account Table.
+7. Display the customer details Age wise with balance>=20,000Rs/*
+
+
+
+1.alter table customer modify Email varchar(20);
+
+2.alter table customer modify Email varchar(20) NOT NULL;
+
+3.	select count(CustID) AS total_customers 
+	from Acct 
+	where balance greater than 50000;
+
+4.     select avg(balance)
+    -> from Acct
+    -> where Acct_type="savings";
+    
+5.	select CustID,Name,Cust_address,Phn,Email,Age
+    -> from customer
+    -> where Cust_address="pune" or name like 'A%';
+
+
+6.	 create table Savings_Acct AS
+    -> select Acct_no,branchID,CustID,date_open,balance
+    -> from Acct 
+    -> where Acct_type="savings";
+
+7.	select C.CustID,C.Name,C.Cust_address,C.Phn,C.Email,C.Age 
+    -> from customer C
+    -> JOIN Acct A on C.CustID=A.CustID
+    -> where A.balance <=20000
+    -> order by C.Age;
+

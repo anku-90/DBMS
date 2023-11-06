@@ -1,0 +1,34 @@
+Create following tables using a given schema and insert appropriate data into the same:
+Customer (CustID, Name, Cust_Address, Phone_no, Email_ID, Age)
+Branch (Branch ID, Branch_Name, Address)
+Account (Account_no, Branch ID, CustID, open_date, Account_type, Balance)
+1. Create the tables with referential integrity.
+2. Draw the ER diagram for the same.
+3. Create a View as Saving account displaying the customer details with the open date as 16/8/2018.
+4. Update the View with Cust_Address as Pune for CustID =103.
+5. Create a View as Loan account displaying the customer details with the open date as 16/2/2018.
+6. Create an Index on primary key column of table Customer.
+7. Create an Index on primary key column of table Branch.
+8. Create a sequence on Customer Table.
+9. Create synonym ‘Cust_info’ for branch table.
+
+
+
+3 & 5 mysql> create view savings_acct AS
+    -> select c.* from customer c 
+    -> join Acct a ON c.CustID=a.CustID
+    -> where a.Acct_type='savings' and date_open='12.1.22';
+
+4 mysql> update customer 
+    -> set cust_address='pune'
+    -> where custid=2;
+
+6 mysql> create index idx_cust on customer(CustID);
+
+7 mysql> create index idx_branch on branch(branchID);
+
+8 create table customers(custid int primary key auto_increment);
+
+9.mysql> create view cust_info AS 
+    -> select * from branch;
+

@@ -1,0 +1,25 @@
+Create collection Student with fields as Roll_No, Name, Class, Marks, Address, Enrolled_Courses.
+(Hint: One student can enrol in multiple courses. Use Array to store the names of courses enrolled)
+Insert 10 documents in the collection Student. Write the queries for following.
+1. List the names of students who have enrolled in the course “DBMS”, “TOC”.
+2. List the Roll numbers and class of students who have marks more than 50 or class as TE.
+3. Update the entire record of roll_no A10.
+4. Display the names of students having 3rd and 4th highest marks.
+5. Delete the records of students having marks less than 20.
+6. Delete only first record from the collection.
+
+
+
+1. db.student.find({course:{$in:["DBMS","TOC"]}},{_id:0,name:1})
+
+2. db.student.find({$or: [{marks:{$gt:50}},{class:"TE"}]},{_id:0,roll:1,class:1})
+
+3. db.student.update({roll:"1"},{ roll:4, name:"sshiva", class:"SE", marks:45, course:"IOT"})
+
+4. db.student.find({},{_id:0,name:1,marks:1}).sort({marks:-1}).skip(2).limit(2);
+
+5 db.student.deleteMany({marks:{$lt:20}})
+
+6.db.student.deleteOne({})
+
+

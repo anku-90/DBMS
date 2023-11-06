@@ -1,0 +1,30 @@
+Employee( emp_id, dept_idemp_name, DoJ, salary, commission,job_title)
+Consider the schema given above for Write a PLSQL Program to
+1. Create a Trigger to ensure the salary of the employee is not decreased.
+2. Whenever the job title is changed for an employee write the following details into job_history table. Employee
+ID, old job title, old department ID, DoJ for start date, system date for end date.
+
+
+
+create table job_history(emp_id int,old_jobtitle varchar(20),old_deptid int,start_date varchar(20),end_date varchar(20));
+create table employee(emp_id int,dept_id int,emp_name varchar(20),DOJ varchar(20),salary int,job_title varchar(20));
+
+create trigger ABC 
+before update on employee
+for each row 
+begin
+     if :NEW.salary<:OLD.salary then
+     raise_application_error(-21,'salary cannot be decreased ');
+     end if;
+end
+
+create OR replace trigger JOBTITLE
+after update on employee 
+for each row
+begin 
+     if :OLD.job_title~=:NEW.job_title then
+     insert into job_history(emp_id,old_jobtitle,old_deptid,start_date,end_date)
+     values(:OLD.emp_id,:OLD.job_title,:OLD.dept_id,:OLD.DOJ,SYSDATE);
+     END IF;
+END
+

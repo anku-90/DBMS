@@ -1,0 +1,56 @@
+Consider following schema for Bank database.
+Account(Account_No, Cust_Name, Balance, NoOfYears)
+Earned_Interest(Account_No, Interest_Amt)
+1. Write a PL/SQL procedure for following requirement. Take as input Account_No and Interest Rate from User.
+Calculate the Interest_Amt as simple interest for the given Account_No and store it in Earned_Interest table.
+Display all the details of Earned_Interest Table.
+2. Write a PLSQL function to display all records from Account table having Balance greater than 50,000.
+
+
+1.create table acc(Account_No int,balance int);
+create table Earned_Interest(Account_No int,Interest_Amt int);
+
+insert into acc values(1,222);
+  
+CREATE OR REPLACE PROCEDURE Interest (
+    p_Account_No IN acc.Account_No%TYPE,
+    p_Interest_Rate IN NUMBER
+) AS
+    v_Principal NUMBER;
+    v_Interest_Amt NUMBER;
+BEGIN
+    -- Get the principal balance for the specified account
+    SELECT Balance INTO v_Principal
+    FROM acc
+    WHERE Account_No = p_Account_No;
+
+    -- Calculate the interest amount (Simple Interest)
+    v_Interest_Amt := (v_Principal * p_Interest_Rate) / 100;
+
+    -- Insert the interest amount into the Earned_Interest table
+    INSERT INTO Earned_Interest (Account_No, Interest_Amt)
+    VALUES (p_Account_No, v_Interest_Amt);
+
+
+    -- Display all details from the Earned_Interest table
+    FOR rec IN (SELECT * FROM Earned_Interest)
+    LOOP
+        DBMS_OUTPUT.PUT_LINE('Account_No: ' || rec.Account_No || ', Interest_Amt: ' || rec.Interest_Amt);
+    END LOOP;
+END;
+/
+DECLARE
+    p_Account_No Account.Account_No%TYPE := 1; -- Replace with the desired account number
+    p_Interest_Rate NUMBER := 5; -- Replace with the desired interest rate
+BEGIN
+    Interest(p_Account_No,p_Interest_Rate);
+END;
+
+2.create function aasa(p_min_balance in Number)
+return sys_refcursor as v_cursor sys_refcursor;
+
+begin 
+   open v_cursor for
+   select * from acc where balance > p_min_balance;
+   return v_cursor;
+end;

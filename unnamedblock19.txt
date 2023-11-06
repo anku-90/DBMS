@@ -1,0 +1,60 @@
+Employee( emp_id, dept_idemp_name, DoJ, salary, commission,job_title)
+Salary_Increment(emp_id, new_salary)
+Consider the schema given above. Write a PLSQL Unnamed Block of code to increase the salary of employee
+115 based on the following conditions:
+Accept emp_id from user. If experience of employee is more than 10 years, increase salary by 20%. If experience
+is greater than 5 years, increase salary by 10% Otherwise 5%. (Hint: Find the years of experience from Date of
+Joining (DoJ)). Store the incremented salary in Salary_Increment table.
+Also handle the exception by named exception handler or user defined exception handler.
+
+
+
+
+
+
+create table EMPLOY(emp_id int,dept_id int,emp_name varchar(20),DOJ date,salary int);
+
+create table salary_increm(emp_id NUMBER,salary NUMBER);
+
+insert into employ values(115,100,'ankush','09:03:2015',1000000);
+
+DECLARE
+  v_emp_id NUMBER;
+  v_experience NUMBER;
+  v_salary NUMBER;
+  curr_salary NUMBER;
+
+BEGIN
+ 
+  v_emp_id := &v_emp_id;
+
+  
+  SELECT (SYSDATE - DOJ) / 365 INTO v_experience
+  FROM EMPLOY
+  WHERE emp_id = v_emp_id;
+
+  SELECT salary into curr_salary
+  from EMPLOY
+  where emp_id=v_emp_id;
+
+  IF v_experience > 10 THEN
+   v_salary := curr_salary * 1.20; -- 20% increase
+  ELSIF v_experience > 5 THEN
+    v_salary := curr_salary * 1.10; -- 10% increase
+  ELSE
+    v_salary := curr_salary * 1.05; -- 5% increase
+  END IF;
+
+  
+  INSERT INTO salary_increm (emp_id, salary)
+  VALUES (v_emp_id, v_salary);
+
+  COMMIT;
+  
+  
+  DBMS_OUTPUT.PUT_LINE('Employee ' || v_emp_id || ' has a new salary of ' || v_salary);
+
+EXCEPTION
+  WHEN OTHERS THEN
+    DBMS_OUTPUT.PUT_LINE(SQLERRM);
+END;

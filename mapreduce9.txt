@@ -1,0 +1,40 @@
+Create collection for Student{roll_no, name, class, dept, aggregate_marks}. Write Map Reduce Functions for
+following requirements.
+
+1. Finding the total marks of students of “TE” class department-wise.
+2. Finding the highest marks of students of “SE” class department-wise.
+3. Find Average marks of students of “BE” class department-wise.
+
+
+
+
+1.var map=function(){
+...  if(this.class=="TE"){
+... emit(this.dept,this.marks);};};
+> var reduce=function(dept,marks){
+... return Array.sum(marks);
+... };
+> db.A.mapReduce(map,reduce,{out:"RESULT"});
+> db.RESULT.find({});
+
+
+
+
+2.var map2=function(){
+...  if(this.class=="SE"){
+... emit(this.dept,this.marks);
+... };
+... };
+> var reduce2=function(dept,marks){
+... return Math.max(...marks);
+... };
+> db.A.mapReduce(map2,reduce2,{out:"RESULT2"});
+> db.RESULT2.find({});
+
+
+
+3.var map=function(){ if(this.class=="BE") {    emit(this.dept,{total_marks:this.marks,count:1}); } };
+> var reduce=function(dept,values){ var reduced={total_marks:0,count:0};  values.forEach(function(value){ reduced.total_marks += value.total_marks; reduced.count += value.count; }); return reduced; };
+> var final=function(dept,reduced){ return reduced.total_marks/reduced.count; };
+> db.A.mapReduce(map,reduce,{out:"result4",finalize:final});
+> db.result4.find({});

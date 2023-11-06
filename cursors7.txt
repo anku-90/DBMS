@@ -1,0 +1,88 @@
+Consider the following schema for Products table.
+Products(Product_id, Product_Name, Product_Type, Price)
+1. Write a parameterized cursor to display all products in the given price range of price and type ‘Apparel’.
+Hint: Take the user input for minimum and maximum price for price range.
+2. Write an explicit cursor to display information of all products with Price greater than 5000.
+3. Write an implicit cursor to display the number of records affected by the update operation incrementing Price
+of all products by 1000.
+
+
+CREATE TABLE Product(Product_id int,Product_Name varchar(20),Price int);
+
+alter table Product add Product_Type varchar(20);
+select * from Product;
+
+insert into Product values(1,'soap',2000,'apparel');
+insert into Product values(12,'towel',9000,'apparel');
+insert into Product values(3,'book',5600,'apparel');
+insert into Product values(6,'table',1000,'apparel');
+
+1.DECLARE
+    -- Declare variables for user input
+    v_min_price NUMBER;
+    v_max_price NUMBER;
+    
+    -- Declare cursor
+    CURSOR product_cursor (min_price NUMBER, max_price NUMBER) IS
+        SELECT Product_id, Product_Name, Product_Type, Price
+        FROM Product
+        WHERE Price BETWEEN min_price AND max_price
+        AND Product_Type = 'apparel';
+BEGIN
+    
+    -- Get user input for minimum and maximum prices
+    v_min_price := &min_price_input;  -- You can use & to take user input
+    v_max_price := &max_price_input;  -- or use bind variables
+    
+    open product_cursor(v_min_price,v_max_price);
+);
+    -- Loop through the cursor and display results
+    DBMS_OUTPUT.PUT_LINE('Product_id | Product_Name | Product_Type | Price');
+    DBMS_OUTPUT.PUT_LINE('--------------------------------------------');
+    
+    FOR I IN product_cursor(v_min_price, v_max_price) LOOP
+        DBMS_OUTPUT.PUT_LINE(I.Product_id || ' | ' || I.Product_Name || ' | ' || I.Product_Type || ' | ' || I.Price);
+    END LOOP;
+    close product_cursor;
+    
+   
+END;
+
+
+
+2. DECLARE
+    -- Declare cursor
+    CURSOR ROHH IS
+        SELECT Product_id, Product_Name, Product_Type, Price
+        FROM Product
+        WHERE Price > 5000;
+BEGIN
+    -- Open the cursor
+    open ROHH;
+    
+    DBMS_OUTPUT.PUT_LINE('Product_id | Product_Name | Product_Type | Price');
+    DBMS_OUTPUT.PUT_LINE('--------------------------------------------');
+    
+    FOR i IN ROHH LOOP
+        DBMS_OUTPUT.PUT_LINE(i.Product_id || ' | ' || i.Product_Name || ' | ' || i.Product_Type || ' | ' || i.Price);
+    END LOOP;
+    close ROHH;
+    
+END;
+
+3.DECLARE
+    v_num_records_affected NUMBER;
+BEGIN
+    -- Update operation
+    UPDATE Products
+    SET Price = Price + 1000;
+    
+    -- Get the number of records affected
+    v_num_records_affected := SQL%ROWCOUNT;
+    
+    -- Display the number of records affected
+    DBMS_OUTPUT.PUT_LINE('Number of records affected by the update: ' || v_num_records_affected);
+END;
+/
+
+

@@ -1,0 +1,42 @@
+Consider Following Schema
+Employee (Employee_id, First_name, Last_name , Hire_date, Salary, Job_title, Manager_id, department_id)
+Departments(Department_id, Department_name, Manager_id, Location_id)
+Locations(Location_id , Street_address , Postal_code, city, state, Country_id)
+Manager(Manager_id, Manager_name)
+Create the tables with referential integrity.Solve following queries using joins and subqueries.
+1. Write a query to find the names (first_name, last_name), the salary of the employees who earn more than
+the average salary and who works in any of the IT departments.
+2. Write a query to find the names (first_name, last_name), the salary of the employees who earn the same
+salary as the minimum salary for all departments.
+3. Write a query to display the employee ID, first name, last names, salary of all employees whose salary is
+above average for their departments.
+4. Write a query to display the department name, manager name, and city.
+5. Write a query to display the name (first_name, last_name), hire date, salary of all managers whose
+experience is more than 15 years.
+
+
+1.mysql>  select e.first_name,e.last_name,e.salary 
+from employee e 
+join departments d on e.department_id=d.department_id 
+where salary greaterthan( select AVG(salary) from employee) 
+and d.department_name='it';
+
+
+2.mysql> select first_name,last_name,salary
+    -> from employee 
+    -> where salary =(
+    -> select min(salary) from employee);
+
+
+3.mysql> select e.first_name,e.last_name,e.salary 
+    -> from employee e 
+    -> where salary greaterthan(
+    -> select avg(salary) from employee e2
+    -> where e.department_id=e2.department_id);
+
+4.mysql> select d.department_name,m.manager_name,l.city
+    -> from departments d 
+    -> join manager m on d.manager_id=m.manager_id
+    -> join locations l on l.location_id=d.location_id;
+    
+5.SELECT e.First_name, e.Last_name, e.Hire_date, e.Salary FROM Employee e JOIN Manager m ON e.Employee_id = m.Manager_id WHERE YEAR(CURDATE()) - YEAR(e.Hire_date) > 15;
