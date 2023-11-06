@@ -1,0 +1,42 @@
+Create following tables using a given schema and insert appropriate data into the same:
+Customer (CustID, Name, Cust_Address, Phone_no, Age)
+Branch (Branch ID, Branch_Name, Address)
+Account (Account_no, Branch ID, CustID, date_open, Account_type, Balance)
+1. Add the column “Email_Address” in Customer table.
+2. Change the name of column “Email_Address” to “Email_ID” in Customer table.
+3. Display the customer details with highest balance in the account.
+4. Display the customer details with lowest balance for account type= “Saving Account”.
+5. Display the customer details that live in Pune and have age greater than 35.
+6. Display the Cust_ID, Name and Age of the customer in ascending order of their age.
+7. Display the Name and Branch ID of the customer group by the Account_type.
+
+
+
+
+1. mysql> alter table customer
+    -> add Email_address varchar(20);
+
+2. alter table customer rename column Email_address to email_id;
+
+3.select c.* from customer c  join Acct a on c.CustID=a.CustID ORDER BY a.balance desc limit 1;
+
+4.mysql> select c.* from customer c
+    -> join Acct a on c.CustID=a.CustID
+    -> where Acct_type='savings'
+    -> order by a.balance asc
+    -> limit 1;
+
+5.mysql> select c.* from customer c 
+    -> where cust_address like '%pune%' and age<25;
+
+6.mysql> select CustID,Name,Age 
+    -> from customer
+    -> order by Age asc;
+
+7.mysql> select c.Name,a.branchID
+    -> FROM customer c
+    -> join Acct a on c.CustID=a.CustID
+    -> GROUP BY Acct_type;
+(7th doubt)
+
+
